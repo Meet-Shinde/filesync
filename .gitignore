@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo 
+*.pyd
+.venv/
+venv/
+env/
+
+# Enviourment variables
+.env
+.env.*
+
+# Databases
+*.db 
+*.sqlite
+*.sqlite3
+filesync.db
+
+# Backend Storage Data
+backend/storage/tmp/*
+backend/storage/objects/*
+!backend/storage/tmp/.gitkeep
+!backend/storage/objects/.gitkeep
+
+# OS/editor files
+.DS_Store
+Thumbs.db 
+.vscode/
+.idea/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+
+# Logs
+*.log 
