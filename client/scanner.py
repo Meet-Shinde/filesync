@@ -19,3 +19,16 @@ def extract_metadata(path: Path):
     )
 
     return metadata
+
+def iter_files(root: Path):
+    files = []
+
+    for path in root.rglob("*"):
+        if path.is_file():
+            files.append(path)
+
+    return files
+
+
+
+
