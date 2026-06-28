@@ -7,6 +7,7 @@ class FileMetaData:
     size: int
     mtime: float
     inode: int
+    hash: str | None = None
 
 def extract_metadata(path: Path, root: Path):
     stat = path.stat()
