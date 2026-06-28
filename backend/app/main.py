@@ -4,13 +4,7 @@ from fastapi import FastAPI
 
 from app.database import Base, engine
 from app import models
-
-app = FastAPI(title="Filesync Backend")
-
-"""@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)"""
-# on_event Deprecated, hence using Lifespan parameter
+from app.routers.devices import router as device_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,6 +12,16 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     yield
     print("Server shutdown...")
+
+app = FastAPI(title="Filesync Backend",
+            lifespan=lifespan)
+
+"""@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)"""
+# on_event Deprecated, hence using Lifespan parameter
+
+app.include_router(device_router)
 
 @app.get("/health")
 def health_check():
