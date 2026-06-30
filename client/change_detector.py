@@ -20,3 +20,13 @@ class ChangeSet:
     deleted: list[Change]
     modified: list[Change]
     unchanged: list[Change]
+
+def build_lookup(data: list[FileMetaData]):
+
+    lookup_table = {
+        file.relpath : file 
+        for file in data 
+    }
+
+    return lookup_table
+
