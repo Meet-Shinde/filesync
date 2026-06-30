@@ -22,7 +22,22 @@ class ChangeSet:
     unchanged: list[Change]
 
 def detect_changes(current_data : list[FileMetaData] , previous_data : list[FileMetaData]):
-    return None
+
+    current_lookup = build_lookup(current_data)
+    previous_lookup = build_lookup(previous_data)
+
+    added = detect_added(current_lookup, previous_lookup)
+    deleted = detect_deleted(current_lookup, previous_lookup)
+    modified , unchanged = detect_modified_and_unchanged(current_lookup, previous_lookup)
+
+    final_change = ChangeSet(
+        added = added,
+        deleted = deleted,
+        modified = modified,
+        unchanged = unchanged
+    )
+
+    return final_change
 
 def build_lookup(data: list[FileMetaData]):
 
@@ -65,43 +80,36 @@ def detect_deleted(curr_lookup : dict , old_lookup : dict):
 
     return deleted_changes
 
-def detect_modified(curr_lookup : dict , old_lookup : dict):
+def detect_modified_and_unchanged(curr_lookup : dict , old_lookup : dict):
 
     modified_changes = []
+    unchanged = []
+
+    def create_change():
+        new_file = Change(
+        change_type = ChangeType.MODIFIED,
+        old_metadata = old_lookup[path],
+        new_metadata = curr_lookup[path]
+    )
+        modified_changes.append(new_file)
+        
 
     for path in curr_lookup:
         if path in old_lookup:
             if curr_lookup[path].size != old_lookup[path].size:
-                new_file = Change(
-                    change_type = ChangeType.MODIFIED,
-                    old_metadata = old_lookup[path],
-                    new_metadata = curr_lookup[path]
-                )
-
-                modified_changes.append(new_file)
-
+                create_change()
             elif curr_lookup[path].mtime != old_lookup[path].mtime:
-                new_file = Change(
-                    change_type = ChangeType.MODIFIED,
-                    old_metadata = old_lookup[path],
-                    new_metadata = curr_lookup[path]
-                )
-
-                modified_changes.append(new_file)
-            
+                create_change()
             elif curr_lookup[path].hash != old_lookup[path].hash:
+                create_change()
+            else:
                 new_file = Change(
-                    change_type = ChangeType.MODIFIED,
-                    old_metadata = old_lookup[path],
-                    new_metadata = curr_lookup[path]
+                change_type = ChangeType.UNCHANGED,
+                old_metadata = old_lookup[path],
+                new_metadata = curr_lookup[path]
                 )
 
-                modified_changes.append(new_file)
-
-    return modified_changes
+                unchanged.append(new_file)
 
 
-
-        
-
-
+    return modified_changes,unchanged
