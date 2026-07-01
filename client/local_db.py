@@ -20,6 +20,7 @@ class LocalDB:
             size INTEGER,
             mtime REAL,
             inode INTEGER
+            hash TEXT
             )
             """
         )
@@ -28,18 +29,20 @@ class LocalDB:
     def upsert_file(self, data):
         self.cursor.execute(
         """
-        INSERT INTO files (path,size,mtime,inode)
-        VALUES (?,?,?,?)
+        INSERT INTO files (path,size,mtime,inode,hash)
+        VALUES (?,?,?,?,?)
         ON CONFLICT(path) DO UPDATE SET
         size = excluded.size,
         mtime = excluded.mtime,
-        inode = excluded.inode
+        inode = excluded.inode.
+        hash = excluded.hash
         """,
         (
             str(data.relPath),  
             data.size,
             data.mtime,  
             data.inode,
+            data.hash
         )
     )
         
@@ -60,13 +63,14 @@ class LocalDB:
         if row is None:
             return None
         
-        path, size, mtime, inode = row
+        path, size, mtime, inode, hash = row
 
         return FileMetaData(
             relPath = path,
             size = size,
             mtime = mtime,
-            inode = inode 
+            inode = inode,
+            hash = hash
         ) 
     
     def get_all_files(self):
@@ -77,13 +81,14 @@ class LocalDB:
         records = []
 
         for row in rows:
-            path, size, mtime, inode = row
+            path, size, mtime, inode, hash = row
             records.append(
                 FileMetaData(
                     relPath = path,
                     size = size,
                     mtime = mtime,
-                    inode = inode
+                    inode = inode,
+                    hash = hash
                 )
             )
         return records
