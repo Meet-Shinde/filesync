@@ -13,8 +13,6 @@ class LocalDB:
         return conn
 
     def _create_tables(self):
-        self.cursor.execute("DROP TABLE IF EXISTS files")
-
         self.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS files (
