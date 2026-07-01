@@ -42,7 +42,7 @@ def detect_changes(current_data : list[FileMetaData] , previous_data : list[File
 def build_lookup(data: list[FileMetaData]):
 
     lookup_table = {
-        file.relpath : file 
+        file.relPath : file 
         for file in data 
     }
 

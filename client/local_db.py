@@ -13,13 +13,15 @@ class LocalDB:
         return conn
 
     def _create_tables(self):
+        self.cursor.execute("DROP TABLE IF EXISTS files")
+
         self.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS files (
             path TEXT PRIMARY KEY,
             size INTEGER,
             mtime REAL,
-            inode INTEGER
+            inode INTEGER,
             hash TEXT
             )
             """
@@ -34,7 +36,7 @@ class LocalDB:
         ON CONFLICT(path) DO UPDATE SET
         size = excluded.size,
         mtime = excluded.mtime,
-        inode = excluded.inode.
+        inode = excluded.inode,
         hash = excluded.hash
         """,
         (
