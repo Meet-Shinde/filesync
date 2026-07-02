@@ -1,27 +1,33 @@
-from dataclasses import dataclass
-from scanner import FileMetaData
-from enum import Enum, auto
-from change_detector import ChangeSet
-
-class OperationType(Enum):
-    UPLOAD = auto()
-    DOWNLOAD = auto()
-    DELETE = auto()
-
-@dataclass
-class Operation:
-    type : OperationType
-    file : FileMetaData
-
-@dataclass
-class Plan:
-    operations : list[Operation]
+from models import Change , ChangeSet , ChangeType , Operation , OperationType , Plan 
 
 def create_plan(changes: ChangeSet):
-    plan = Plan()
+    plan = Plan(
+        operations = []
+    )
 
+    for change in changes.iter_changes():
+        plan.operations.append(_create_operation(change))
 
-def _create_operation(changes: ChangeSet):
-    pass
+    return plan
 
-
+def _create_operation(change : Change):
+    if change.change_type == ChangeType.ADDED:
+        operation = Operation(
+            type = OperationType.UPLOAD,
+            file = change.new_metadata
+        )
+        return operation
+    
+    if change.change_type == ChangeType.DELETED:
+        operation = Operation(
+            type = OperationType.DELETE,
+            file = change.old_metadata
+        )
+        return operation
+    
+    if change.change_type == ChangeType.MODIFIED:
+        operation = Operation(
+            type = OperationType.UPLOAD,
+            file = change.new_metadata
+        )
+        return operation
