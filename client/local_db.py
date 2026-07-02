@@ -1,5 +1,5 @@
 import sqlite3
-from scanner import FileMetaData  
+from models import FileMetaData  
 
 class LocalDB:
     def __init__(self, db_name):

@@ -1,13 +1,5 @@
 from pathlib import Path
-from dataclasses import dataclass 
-
-@dataclass
-class FileMetaData:
-    relPath: str
-    size: int
-    mtime: float
-    inode: int
-    hash: str | None = None
+from models import FileMetaData 
 
 def extract_metadata(path: Path, root: Path):
     stat = path.stat()

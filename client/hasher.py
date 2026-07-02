@@ -1,5 +1,5 @@
 import hashlib
-from scanner import FileMetaData
+from models import FileMetaData
 
 def hash_file(path , fileinfo: FileMetaData):
     hasher = hashlib.sha256()
